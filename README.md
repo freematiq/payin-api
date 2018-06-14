@@ -1,6 +1,7 @@
 #Описание интерфейса сервиса приема платежей через систему Payin-payout
 - [Введение](#Введение)
 - [Форма регистрации платежа](#Форма-регистрации-платежа)
+    - [Структура поля purchase](#Структура-поля-purchase)
 - [Фрагмент формы регистрации платежа](#Фрагмент-формы-регистрации-платежа)
 - [Форма проверки статуса платежа](#Форма-проверки-статуса-платежа)
 - [Фрагмент формы регистрации платежа](#Фрагмент-формы-регистрации-платежа)
@@ -48,8 +49,37 @@ shop_url | нет | Строка длиной до 1024 символов | Ад�
 addInfo_N | нет | Строка длиной до 1024 символов | Все поля формы, имеющие в названии префикса "addInfo_N"(где N порядковый номер),обрабатываются системой Payin-payout автоматически и передаются на сайт продавца. (Кодировка UTF-8)
 token | нет | Строка | Токен для соверешения рекуррентых платежей. [Создание токена](Token.md)
 sign | да | Строка | Контрольная подпись оповещения осоздании платежа, которая используется для проверки однозначной идентификации отправителя.
+purchase | нет | Массив | Данные о покупке. 
 
+### Структура поля purchase
 
+```
+purchase' => [
+        'products' => [
+            [
+                'name' => 'Ананас',
+                'price' => 3,
+                'quantity' => 3,
+                'vat' => 0.18,
+                'unit' => 'kg',
+                'discount' => [
+                    'type' => 'amount',
+                    'value' => 2
+                ]
+            ],
+            [
+                'name' => 'Smartphone',
+                'price' => 6,
+                'quantity' => 2,
+                'vat' => 0.10,
+                'unit' => 'piece',
+                'discount' => [
+                    'type' => 'amount',
+                    'value' => 2
+                ]
+            ]
+        ]
+```
 * Если в процессе регистрации платежа произошла ошибка и в запросе не указан failUrl
 то система выводит ошибку 500, иначе к строке переадресация failUrl добавляется 
 query параметр error с описанием ошибки.
@@ -80,6 +110,20 @@ query параметр error с описанием ошибки.
  <input type="hidden" name="failUrl" value="http://example.ru/fail.html"> 
  <input type="hidden" name="sign" value="f849a1c57cccb372ec4a3a2e04d2feba">
  <input type="hidden" name="addInfo_1" value="addinf1"> 
+ <input type="hidden" name="purchase[products][0][name]" value="Ананас">
+ <input type="hidden" name="purchase[products][0][price]" value="50">
+ <input type="hidden" name="purchase[products][0][quantity]" value="1">
+ <input type="hidden" name="purchase[products][0][vat]" value="0.18">
+ <input type="hidden" name="purchase[products][0][unit]" value="kg">
+ <input type="hidden" name="purchase[products][0][discount][type]" value="amount">
+ <input type="hidden" name="purchase[products][0][discount][value]" value="0">
+ <input type="hidden" name="purchase[products][1][name]" value="Smartphone">
+ <input type="hidden" name="purchase[products][1][price]" value="50">
+ <input type="hidden" name="purchase[products][1][quantity]" value="1">
+ <input type="hidden" name="purchase[products][1][vat]" value="0.10">
+ <input type="hidden" name="purchase[products][1][unit]" value="piece">
+ <input type="hidden" name="purchase[products][1][discount][type]" value="amount">
+ <input type="hidden" name="purchase[products][1][discount][value]" value="0">
  ...
  ...
  <input type="submit" value="Оплатить "> 
